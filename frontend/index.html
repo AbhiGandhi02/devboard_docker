@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>DevBoard</title>
+</head>
+
+<body>
+  <h1>Task Logger</h1>
+
+  <input id="taskInput" placeholder="Enter task">
+  <button onclick="addTask()">Add</button>
+
+  <ul id="taskList"></ul>
+
+  <script>
+    const API = "/api";
+
+    async function loadTasks() {
+      const res = await fetch(API + "/tasks");
+      const data = await res.json();
+      const list = document.getElementById("taskList");
+      list.innerHTML = "";
+      data.forEach(t => list.innerHTML += `<li>${t.task}</li>`);
+    }
+
+    async function addTask() {
+      const task = document.getElementById("taskInput").value;
+      await fetch(API + "/tasks", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ task })
+      });
+      loadTasks();
+    }
+
+    loadTasks();
+  </script>
+</body>
+
+</html>
